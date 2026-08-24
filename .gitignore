@@ -18,5 +18,6 @@ postgres_data/
 # Editor and operating-system files
 .idea/
 .vscode/
+.serena/
 .DS_Store
 Thumbs.db

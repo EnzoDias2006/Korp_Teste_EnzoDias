@@ -78,13 +78,13 @@ docker compose ps
 Migrations are explicit and run before application traffic. Service startup never mutates the
 schema. The default local endpoints are:
 
-| Endpoint | URL |
-|---|---|
-| Stock readiness | `http://localhost:8081/health/ready` |
-| Billing readiness | `http://localhost:8082/health/ready` |
-| Stock API | `http://localhost:8081/api/v1` |
-| Billing API | `http://localhost:8082/api/v1` |
-| PostgreSQL host port | `localhost:5432` |
+| Endpoint             | URL                                  |
+| -------------------- | ------------------------------------ |
+| Stock readiness      | `http://localhost:8081/health/ready` |
+| Billing readiness    | `http://localhost:8082/health/ready` |
+| Stock API            | `http://localhost:8081/api/v1`       |
+| Billing API          | `http://localhost:8082/api/v1`       |
+| PostgreSQL host port | `localhost:5432`                     |
 
 The checked-in `.env.example` contains development-only values. Never commit the generated `.env`.
 

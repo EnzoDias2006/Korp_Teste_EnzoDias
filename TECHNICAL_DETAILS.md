@@ -42,12 +42,12 @@ small, local state and the backend remains authoritative.
 
 Only lifecycle behavior present in the final source is listed:
 
-| Component | Lifecycle behavior and reason |
-|---|---|
-| `ProductList` | Calls `loadProducts()` from its constructor; it does not implement `OnInit`. |
-| `ProductCreate` | Uses no lifecycle hook. |
-| `InvoiceList` | `ngOnInit()` loads invoice summaries when the route page initializes. |
-| `InvoiceCreate` | `ngOnInit()` creates the first item row and loads selectable products. |
+| Component       | Lifecycle behavior and reason                                                    |
+| --------------- | -------------------------------------------------------------------------------- |
+| `ProductList`   | Calls `loadProducts()` from its constructor; it does not implement `OnInit`.     |
+| `ProductCreate` | Uses no lifecycle hook.                                                          |
+| `InvoiceList`   | `ngOnInit()` loads invoice summaries when the route page initializes.            |
+| `InvoiceCreate` | `ngOnInit()` creates the first item row and loads selectable products.           |
 | `InvoiceDetail` | `ngOnInit()` connects the route ID and explicit retry trigger to detail loading. |
 
 Each page that owns a subscription injects `DestroyRef` and uses `takeUntilDestroyed`. No component
@@ -71,18 +71,18 @@ Signals are updated from HTTP subscriptions and keep templates declarative.
 
 RxJS represents asynchronous HTTP and route flows, not synchronous global state.
 
-| API/operator | Concrete use |
-|---|---|
-| `HttpClient` Observables | Product and invoice requests. |
-| `map` | DTO-to-domain mapping and route parameter conversion. |
-| `catchError` | Safe error mapping and intentional recovery. |
-| `finalize` | Clear loading, saving, and printing on success or failure. |
-| `switchMap` | Replace an obsolete invoice-detail request when route/retry input changes. |
-| `combineLatest` | Combine invoice ID and the manual retry trigger. |
-| `filter` | Reject unusable route IDs. |
-| `tap` | Reset detail state immediately before loading. |
-| `BehaviorSubject` | Seed and trigger the explicit detail reload. |
-| `takeUntilDestroyed` | Bind subscriptions to the page lifecycle. |
+| API/operator             | Concrete use                                                               |
+| ------------------------ | -------------------------------------------------------------------------- |
+| `HttpClient` Observables | Product and invoice requests.                                              |
+| `map`                    | DTO-to-domain mapping and route parameter conversion.                      |
+| `catchError`             | Safe error mapping and intentional recovery.                               |
+| `finalize`               | Clear loading, saving, and printing on success or failure.                 |
+| `switchMap`              | Replace an obsolete invoice-detail request when route/retry input changes. |
+| `combineLatest`          | Combine invoice ID and the manual retry trigger.                           |
+| `filter`                 | Reject unusable route IDs.                                                 |
+| `tap`                    | Reset detail state immediately before loading.                             |
+| `BehaviorSubject`        | Seed and trigger the explicit detail reload.                               |
+| `takeUntilDestroyed`     | Bind subscriptions to the page lifecycle.                                  |
 
 The code avoids nested subscriptions and blind automatic retries. A potentially ambiguous
 finalization failure is retried only through a visible user action.
@@ -111,16 +111,16 @@ and print media rules. Status and errors are not communicated by color alone.
 
 Other deliberate frontend tools are:
 
-| Tool | Purpose |
-|---|---|
-| Angular CDK | Material foundation and peer dependency; no application CDK API is imported directly. |
-| RxJS | HTTP and route composition, error recovery, finalization, and lifecycle cleanup. |
-| Vitest | Unit and component/spec execution through Angular's test builder. |
-| TestBed and `HttpTestingController` | Deterministic component and HTTP contract tests. |
-| Angular ESLint | TypeScript and template linting, including accessibility rules. |
-| Lefthook | Local pre-commit lint and pre-push test/build gates. |
-| Prettier | Source and Markdown formatting. |
-| Bun | Dependency installation, lockfile resolution, and scripts. |
+| Tool                                | Purpose                                                                               |
+| ----------------------------------- | ------------------------------------------------------------------------------------- |
+| Angular CDK                         | Material foundation and peer dependency; no application CDK API is imported directly. |
+| RxJS                                | HTTP and route composition, error recovery, finalization, and lifecycle cleanup.      |
+| Vitest                              | Unit and component/spec execution through Angular's test builder.                     |
+| TestBed and `HttpTestingController` | Deterministic component and HTTP contract tests.                                      |
+| Angular ESLint                      | TypeScript and template linting, including accessibility rules.                       |
+| Lefthook                            | Local pre-commit lint and pre-push test/build gates.                                  |
+| Prettier                            | Source and Markdown formatting.                                                       |
+| Bun                                 | Dependency installation, lockfile resolution, and scripts.                            |
 
 No third-party form, state, toast, spinner, HTTP wrapper, or CSS framework was added.
 
