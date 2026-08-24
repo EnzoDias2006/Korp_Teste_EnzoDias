@@ -7,6 +7,12 @@ regression:
 - Web: `b7efdbbb07f8f31c23aaf6a1526b6c60e2943c1a`
 - API: `06fd227ff2d9d32ccd755942b0729a42f978251f`
 
+## Public delivery links
+
+- [Source repository](https://github.com/EnzoDias2006/Korp_Teste_EnzoDias)
+- [Narrated final demonstration video](https://github.com/EnzoDias2006/Korp_Teste_EnzoDias/releases/download/v1.0.0/korp-final-demo.mp4)
+- [Consolidated technical details](./TECHNICAL_DETAILS.md)
+
 ## What the application demonstrates
 
 - persisted product creation and listing;
