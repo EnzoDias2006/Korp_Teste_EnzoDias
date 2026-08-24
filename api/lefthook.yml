@@ -1,0 +1,19 @@
+skip:
+  - merge
+  - rebase
+
+pre-commit:
+  parallel: true
+  commands:
+    go-fmt:
+      glob: "**/*.go"
+      run: gofmt -l {files} | grep -q . && (echo "Go files must be formatted with gofmt. Run 'make fmt' to fix." && exit 1) || exit 0
+
+pre-push:
+  serial: true
+  commands:
+    go-vet:
+      run: make vet
+
+    go-test:
+      run: make test

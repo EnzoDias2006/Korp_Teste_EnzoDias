@@ -1,0 +1,96 @@
+<mat-card class="product-create-card">
+  <mat-card-header>
+    <mat-card-title>Cadastrar Produto</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (errorMessage(); as failure) {
+      <div class="error-banner" role="alert">
+        <span>{{ failure.message }}</span>
+        @if (failure.requestId) {
+          <small
+            >ID da solicitação: <code>{{ failure.requestId }}</code></small
+          >
+        }
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label for="code">Código</mat-label>
+        <input matInput id="code" formControlName="code" type="text" autocomplete="off" />
+        @if (code?.hasError('required') && code?.touched) {
+          <mat-error>Código é obrigatório</mat-error>
+        }
+        @if (code?.hasError('pattern') && code?.touched) {
+          <mat-error>Código não pode ser apenas espaços em branco</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label for="description">Descrição</mat-label>
+        <input
+          matInput
+          id="description"
+          formControlName="description"
+          type="text"
+          autocomplete="off"
+        />
+        @if (description?.hasError('required') && description?.touched) {
+          <mat-error>Descrição é obrigatória</mat-error>
+        }
+        @if (description?.hasError('pattern') && description?.touched) {
+          <mat-error>Descrição não pode ser apenas espaços em branco</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label for="balance">Saldo</mat-label>
+        <input
+          matInput
+          id="balance"
+          formControlName="balance"
+          type="number"
+          step="1"
+          min="0"
+          autocomplete="off"
+        />
+        @if (balance?.hasError('required') && balance?.touched) {
+          <mat-error>Saldo é obrigatório</mat-error>
+        }
+        @if (balance?.hasError('min') && balance?.touched) {
+          <mat-error>Saldo não pode ser negativo</mat-error>
+        }
+        @if (balance?.hasError('notInteger') && balance?.touched) {
+          <mat-error>Saldo deve ser um número inteiro</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid || saving() || submitInFlight()"
+          aria-label="Criar produto"
+        >
+          @if (saving() || submitInFlight()) {
+            <mat-spinner diameter="20" class="spinner"></mat-spinner>
+            <span>Salvando...</span>
+          } @else {
+            <span>Criar Produto</span>
+          }
+        </button>
+        <button
+          mat-button
+          color="warn"
+          type="button"
+          [routerLink]="['/products']"
+          aria-label="Cancelar"
+        >
+          <mat-icon>cancel</mat-icon>
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

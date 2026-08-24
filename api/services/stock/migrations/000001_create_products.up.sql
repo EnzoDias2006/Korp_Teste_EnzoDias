@@ -1,0 +1,8 @@
+CREATE TABLE products (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    code TEXT NOT NULL UNIQUE,
+    description TEXT NOT NULL,
+    balance INTEGER NOT NULL CHECK (balance >= 0),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

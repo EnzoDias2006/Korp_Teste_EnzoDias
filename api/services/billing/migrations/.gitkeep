@@ -1,0 +1,3 @@
+# Migrations directory for the billing service.
+# Future SQL migrations will be placed here.
+# Use golang-migrate for migration management.

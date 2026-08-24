@@ -1,0 +1,122 @@
+<mat-card class="invoice-card">
+  <mat-card-header>
+    <mat-card-title>Create Invoice</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (errorMessage(); as failure) {
+      <div
+        class="error-banner"
+        [class.conflict-error]="failure.code === 'IDEMPOTENCY_CONFLICT'"
+        role="alert"
+      >
+        <span>{{ failure.message }}</span>
+        @if (failure.requestId) {
+          <small
+            >ID da solicitação: <code>{{ failure.requestId }}</code></small
+          >
+        }
+      </div>
+    }
+
+    @if (isLoadingProducts()) {
+      <div class="loading-container" role="status" aria-label="Loading products">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading products...</p>
+      </div>
+    } @else if (productLoadError(); as failure) {
+      <div class="error-banner" role="alert">
+        <span>{{ failure.message }}</span>
+        @if (failure.requestId) {
+          <small
+            >ID da solicitação: <code>{{ failure.requestId }}</code></small
+          >
+        }
+        <button mat-stroked-button type="button" (click)="loadProducts()">
+          Retry loading products
+        </button>
+      </div>
+    } @else if (products().length === 0) {
+      <div class="empty-products" role="status">
+        <p>No products are available for this invoice.</p>
+        <a mat-stroked-button routerLink="/products/new">Create a product</a>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div formArrayName="items" class="items-container">
+          @for (item of items.controls; track item; let i = $index) {
+            <div [formGroupName]="i" class="item-row">
+              <mat-form-field appearance="outline" class="product-field">
+                <mat-label>Product</mat-label>
+                <mat-select formControlName="productId">
+                  @for (product of products(); track product.id) {
+                    <mat-option [value]="product.id">
+                      {{ product.code }} - {{ product.description }} (Stock: {{ product.balance }})
+                    </mat-option>
+                  }
+                </mat-select>
+                @if (item.get('productId')?.hasError('required')) {
+                  <mat-error>Product is required</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="quantity-field">
+                <mat-label>Quantity</mat-label>
+                <input matInput type="number" formControlName="quantity" min="1" />
+                @if (item.get('quantity')?.hasError('required')) {
+                  <mat-error>Quantity is required</mat-error>
+                }
+                @if (item.get('quantity')?.hasError('min')) {
+                  <mat-error>Must be > 0</mat-error>
+                }
+                @if (item.get('quantity')?.hasError('pattern')) {
+                  <mat-error>Must be integer</mat-error>
+                }
+              </mat-form-field>
+
+              <button
+                mat-icon-button
+                type="button"
+                color="warn"
+                (click)="removeItem(i)"
+                [disabled]="items.length === 1 || isSaving()"
+                aria-label="Remove item"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+
+        @if (items.hasError('duplicateProducts')) {
+          <div class="form-error" role="alert">Cannot select the same product multiple times.</div>
+        }
+
+        <div class="actions">
+          <button mat-button type="button" (click)="addItem()" [disabled]="isSaving()">
+            <mat-icon>add</mat-icon> Add Item
+          </button>
+
+          <span class="spacer"></span>
+
+          <button mat-button type="button" routerLink="/invoices" [disabled]="isSaving()">
+            Cancel
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="form.invalid || isSaving()"
+          >
+            @if (isSaving()) {
+              <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
+              Saving...
+            } @else {
+              Create Invoice
+            }
+          </button>
+        </div>
+      </form>
+    }
+  </mat-card-content>
+</mat-card>

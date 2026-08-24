@@ -1,0 +1,1 @@
+DROP TABLE consumption_operation_results;

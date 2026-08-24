@@ -1,0 +1,76 @@
+@if (loading()) {
+  <div class="loading-container" role="status" aria-label="Loading products">
+    <mat-spinner diameter="50"></mat-spinner>
+    <span>Loading products...</span>
+  </div>
+}
+
+@if (error(); as err) {
+  <mat-card class="error-card">
+    <mat-card-header>
+      <mat-card-title>Failed to load products</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ err.message }}</p>
+      @if (err.requestId) {
+        <p class="request-id">
+          ID da solicitação: <code>{{ err.requestId }}</code>
+        </p>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="retryLoad()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </mat-card-actions>
+  </mat-card>
+}
+
+@if (!loading() && !error() && products().length === 0) {
+  <mat-card class="empty-card">
+    <mat-card-header>
+      <mat-card-title>No products</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>No products registered yet.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-raised-button color="primary" routerLink="/products/new">
+        <mat-icon>add</mat-icon>
+        Create Product
+      </a>
+    </mat-card-actions>
+  </mat-card>
+}
+
+@if (!loading() && !error() && products().length > 0) {
+  <div class="table-container">
+    <div class="table-header">
+      <h2>Products</h2>
+      <a mat-raised-button color="primary" routerLink="/products/new">
+        <mat-icon>add</mat-icon>
+        Create Product
+      </a>
+    </div>
+    <table mat-table [dataSource]="products()" class="products-table">
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef>Code</th>
+        <td mat-cell *matCellDef="let product">{{ product.code }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let product">{{ product.description }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="balance">
+        <th mat-header-cell *matHeaderCellDef>Balance</th>
+        <td mat-cell *matCellDef="let product">{{ product.balance }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+}

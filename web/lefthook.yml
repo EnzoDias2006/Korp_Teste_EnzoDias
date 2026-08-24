@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: "*.{js,ts}"
+      run: bun run lint
+pre-push:
+  parallel: true
+  commands:
+    test:
+      run: bun run test --watch=false
+    build:
+      run: bun run build

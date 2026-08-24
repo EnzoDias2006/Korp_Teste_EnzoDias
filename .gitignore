@@ -1,0 +1,22 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+
+# Frontend dependencies and build output
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Backend build output and local data
+bin/
+*.test
+*.out
+postgres_data/
+
+# Editor and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,56 @@
+.product-create-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+
+  @media (max-width: 600px) {
+    margin: 1rem;
+    padding: 1rem;
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 0.5rem;
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.spinner {
+  display: inline-block;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+mat-card-title {
+  text-align: center;
+}
+
+.error-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  background-color: #f8d7da;
+  color: #721c24;
+
+  code {
+    word-break: break-all;
+  }
+}

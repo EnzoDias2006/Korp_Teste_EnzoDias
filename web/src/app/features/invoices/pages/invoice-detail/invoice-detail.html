@@ -1,0 +1,142 @@
+<div class="page-container">
+  <div class="header-actions no-print">
+    <a mat-button routerLink="/invoices">
+      <mat-icon>arrow_back</mat-icon>
+      Voltar
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state no-print" aria-live="polite">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Carregando fatura...</p>
+    </div>
+  } @else if (notFound()) {
+    <mat-card class="error-card no-print">
+      <mat-card-content class="error-content">
+        <mat-icon color="warn">search_off</mat-icon>
+        <h2>Fatura não encontrada</h2>
+        <p>A fatura que você tentou acessar não existe ou foi removida.</p>
+        <a mat-stroked-button routerLink="/invoices">Voltar para a lista</a>
+      </mat-card-content>
+    </mat-card>
+  } @else if (error()) {
+    <mat-card class="error-card no-print">
+      <mat-card-content class="error-content">
+        <mat-icon color="warn">error_outline</mat-icon>
+        <h2>Erro de comunicação</h2>
+        <p>{{ error() }}</p>
+        @if (requestId(); as id) {
+          <p class="request-id">
+            ID da solicitação: <code>{{ id }}</code>
+          </p>
+        }
+        <button mat-stroked-button (click)="retry()">Tentar novamente</button>
+      </mat-card-content>
+    </mat-card>
+  } @else if (invoice(); as inv) {
+    <mat-card class="print-document">
+      <mat-card-header class="invoice-header">
+        <div class="invoice-title-group">
+          <mat-card-title>Fatura #{{ inv.number }}</mat-card-title>
+          <mat-card-subtitle>Status: {{ translateStatus(inv.status) }}</mat-card-subtitle>
+        </div>
+
+        <div class="invoice-actions no-print">
+          @if (inv.status === 'CLOSED') {
+            <span class="status-badge status-closed">Fechada — somente leitura</span>
+          }
+          @if (printing()) {
+            <div class="printing-indicator" aria-live="polite">
+              <mat-progress-spinner diameter="24" mode="indeterminate"></mat-progress-spinner>
+              <span>Finalizando...</span>
+            </div>
+          }
+          @if (inv.status === 'OPEN') {
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="print()"
+              [disabled]="!canPrint()"
+              aria-label="Finalizar e imprimir fatura"
+            >
+              <mat-icon>print</mat-icon>
+              Finalizar
+            </button>
+          }
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        @if (actionError(); as failure) {
+          <div
+            class="action-error no-print"
+            [class.conflict-error]="failure.code === 'IDEMPOTENCY_CONFLICT'"
+            aria-live="assertive"
+            role="alert"
+          >
+            <mat-icon color="warn">error</mat-icon>
+            <div class="error-details"><strong>Atenção:</strong> {{ failure.message }}</div>
+            <div class="error-actions">
+              @if (failure.code !== 'IDEMPOTENCY_CONFLICT' && canPrint()) {
+                <button mat-stroked-button color="warn" (click)="print()">Tentar novamente</button>
+              } @else {
+                <button mat-stroked-button (click)="retry()">Atualizar / Fechar aviso</button>
+              }
+            </div>
+            @if (failure.requestId) {
+              <div class="request-id action-request-id">
+                ID da solicitação: <code>{{ failure.requestId }}</code>
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="copy-request-id"
+                  (click)="copyRequestId(failure.requestId)"
+                  [attr.aria-label]="'Copiar ID da solicitação ' + failure.requestId"
+                  matTooltip="Copiar ID da solicitação"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="invoice-meta">
+          <p><strong>Criada em:</strong> {{ inv.createdAt | date: 'medium' }}</p>
+          @if (inv.closedAt) {
+            <p><strong>Fechada em:</strong> {{ inv.closedAt | date: 'medium' }}</p>
+          }
+        </div>
+
+        <h3 class="items-title">Itens da Fatura</h3>
+        <div class="table-wrapper">
+          <table
+            mat-table
+            [dataSource]="inv.items"
+            class="mat-elevation-z1"
+            aria-label="Itens da Fatura"
+          >
+            <ng-container matColumnDef="productCode">
+              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <td mat-cell *matCellDef="let item">{{ item.productCode }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="productDescription">
+              <th mat-header-cell *matHeaderCellDef>Descrição</th>
+              <td mat-cell *matCellDef="let item">{{ item.productDescription }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Quantidade</th>
+              <td mat-cell *matCellDef="let item">{{ item.quantity }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

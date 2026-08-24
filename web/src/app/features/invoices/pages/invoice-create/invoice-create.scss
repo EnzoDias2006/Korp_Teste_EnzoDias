@@ -1,0 +1,74 @@
+.invoice-card {
+  max-width: 800px;
+  margin: 24px auto;
+}
+
+.error-banner {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  border: 1px solid #f5c6cb;
+}
+
+.conflict-error {
+  border-style: dashed;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px;
+  gap: 16px;
+}
+
+.items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.item-row {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  .product-field {
+    flex: 1 1 250px;
+  }
+
+  .quantity-field {
+    flex: 1 1 100px;
+  }
+
+  button {
+    margin-top: 8px;
+  }
+}
+
+.form-error {
+  color: #f44336;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+
+  .spacer {
+    flex: 1;
+  }
+
+  .btn-spinner {
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+}

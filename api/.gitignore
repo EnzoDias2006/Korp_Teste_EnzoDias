@@ -1,0 +1,68 @@
+# Go
+__debug_bin
+*.pem
+
+# Go workspace file
+# *.work - but keep go.work
+
+# Go binary files
+go.env
+*.exe
+*.test
+*.out
+
+# Go cache
+*/go
+!**/go.mod
+!**/go.sum
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Docker
+.docker/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Build outputs
+bin/
+build/
+dist/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Database
+*.db
+*.sqlite
+
+# Dependencies (managed by Go modules)
+vendor/
+
+# Docker Compose override
+.docker-compose.override.yml
+
+# Lefthook
+.lefthook/
+
+# System files
+*~

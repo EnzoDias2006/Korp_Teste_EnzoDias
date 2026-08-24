@@ -1,0 +1,88 @@
+<div class="invoice-list-container">
+  <div class="header-actions">
+    <h1>Invoices</h1>
+    <a mat-flat-button color="primary" routerLink="/invoices/new">
+      <mat-icon>add</mat-icon>
+      New Invoice
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state" role="status" aria-label="Loading invoices">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading invoices...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <mat-card class="error-state" appearance="outlined">
+      <mat-card-content>
+        <mat-icon color="warn">error</mat-icon>
+        <p class="error-message">{{ error()?.message }}</p>
+        @if (error()?.requestId; as id) {
+          <p class="request-id">
+            ID da solicitação: <code>{{ id }}</code>
+          </p>
+        }
+        <button mat-stroked-button (click)="loadInvoices()">Retry</button>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!loading() && !error() && invoices().length === 0) {
+    <mat-card class="empty-state" appearance="outlined">
+      <mat-card-content>
+        <mat-icon>receipt_long</mat-icon>
+        <p>No invoices found.</p>
+        <a mat-stroked-button routerLink="/invoices/new">Create your first invoice</a>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (hasData()) {
+    <div class="table-container">
+      <table mat-table [dataSource]="invoices()" aria-label="Invoices list">
+        <!-- Number Column -->
+        <ng-container matColumnDef="number">
+          <th mat-header-cell *matHeaderCellDef>Number</th>
+          <td mat-cell *matCellDef="let invoice">{{ invoice.number }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let invoice">
+            <span class="status-badge" [class]="'status-' + invoice.status.toLowerCase()">
+              {{ invoice.status === 'OPEN' ? 'Aberta' : 'Fechada' }}
+              <span class="sr-only"> ({{ invoice.status }})</span>
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Created At Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let invoice">{{ invoice.createdAt | date: 'short' }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let invoice">
+            <a
+              mat-button
+              color="primary"
+              [routerLink]="['/invoices', invoice.id]"
+              [attr.aria-label]="'View details for invoice ' + invoice.number"
+            >
+              View
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  }
+</div>

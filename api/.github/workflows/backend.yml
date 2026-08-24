@@ -1,0 +1,65 @@
+name: Backend CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Disposable example-only credentials for the isolated CI PostgreSQL instance.
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_ci_password
+      POSTGRES_DB: postgres
+      STOCK_DB_PASSWORD: stock_ci_password
+      BILLING_DB_PASSWORD: billing_ci_password
+      STOCK_DB_URL: postgres://stock_user:stock_ci_password@postgres:5432/stock_db?sslmode=disable
+      BILLING_DB_URL: postgres://billing_user:billing_ci_password@postgres:5432/billing_db?sslmode=disable
+      # Stock integration tests create isolated databases, so they need the CI-only admin role.
+      STOCK_TEST_DATABASE_URL: postgres://postgres:postgres_ci_password@127.0.0.1:5432/stock_db?sslmode=disable
+      BILLING_TEST_DATABASE_URL: postgres://postgres:postgres_ci_password@127.0.0.1:5432/billing_db?sslmode=disable
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+
+      - name: Start clean PostgreSQL
+        run: |
+          docker compose down --volumes --remove-orphans
+          docker compose up -d --wait postgres
+          docker compose ps postgres
+
+      - name: Apply database migrations
+        run: make migrate-up
+
+      - name: Check formatting
+        run: make check-fmt
+
+      - name: Run go vet
+        run: make vet
+
+      - name: Run tests
+        env:
+          GOFLAGS: "-count=1"
+        run: make test
+
+      - name: Build binaries
+        run: make build
+
+      - name: Build Docker images
+        run: make docker-build
+
+      - name: Show PostgreSQL logs on failure
+        if: failure()
+        run: docker compose logs --no-color postgres
+
+      - name: Remove CI infrastructure
+        if: always()
+        run: docker compose down --volumes --remove-orphans
